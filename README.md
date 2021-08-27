@@ -1,10 +1,10 @@
 # CUDA-Hash-Table
 A thread-safe Hash Table using Nvidia’s API for CUDA-enabled GPUs. 200 times faster than the C++ only code through sheer exploitation of a GPU’s fine-grained parallelism.
 
-# HashTable implementation idea:
+# HashTable Idea
 - pair vector: key - value
 
-# Adding an item:
+# Adding an item
 - GPU function, for each key-value pair in the lists given by insertBatch:
   * If the key and value are valid, proceed to the next step
   
@@ -20,24 +20,24 @@ A thread-safe Hash Table using Nvidia’s API for CUDA-enabled GPUs. 200 times f
   * In case a new element is placed on a free position (not an update), the variable **slots_occ**
   existing on both Host and GPU is incremented.
  
-# Extracting an item:
+# Extracting an item
 - searches the buckets in the same manner as the previous operation, no need for serialization (nothing is written)
 
-# Copying keys and resizing values:
+# Copying keys and resizing values
 - copy a batch of keys and values from the **hash_table** (used for resizing)
 
-# Reshape:
+# Reshape
 - allocate a batch of keys of **size = hash_table capacity**
 - copies them via kernel to the device
 - frees memory for the **hash_table**
 - creates a new **hash_table** with the **new capacity**
 - calls insertBatch with the batch from the previous steps to fill the new **hash_table** with the previous values
 
-# insertBatch:
+# insertBatch
 - see code comments for a detailed explanation of how the new capacity is calculated
 - calls reshape if the **load_factor** exceeds max limit
 - allocates memory, adds elements, frees memory
 
-# getBatch:
+# getBatch
 - allocates memory, calls getBatch, frees memory
 
